@@ -18,18 +18,24 @@ class MyApp extends StatelessWidget {
     ),
     ),
     new Center(
+
     child: new Column(children: <Widget>[
         Row(
         //ROW 1
         children: [
-        Container( child:
+        Container(
+    padding: EdgeInsets.all(16.0),
+
+        child:
          new topWeather()
 
         ),
     ]),
     Row(//ROW 2
     children: [
-    Container( child:
+    Container(
+
+        child:
        new weatherIntegration()
 
     ),
