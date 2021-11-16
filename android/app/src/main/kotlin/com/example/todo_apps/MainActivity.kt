@@ -1,4 +1,4 @@
-package com.example.todolist_weather
+package com.example.todo_apps
 
 import io.flutter.embedding.android.FlutterActivity
 

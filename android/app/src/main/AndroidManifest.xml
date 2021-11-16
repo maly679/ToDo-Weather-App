@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.todolist_weather">
+    package="com.example.todo_apps">
    <application
-        android:label="todolist_weather"
+        android:label="todo_apps"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
