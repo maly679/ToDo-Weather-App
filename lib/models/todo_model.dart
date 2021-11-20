@@ -1,6 +1,6 @@
 class TodoModel {
-  String title;
-  bool isDone;
+  String? title;
+  bool? isDone;
 
   TodoModel({
     this.title,

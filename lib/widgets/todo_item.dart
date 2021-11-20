@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TodoItem extends StatefulWidget {
-  final String title;
+  final String? title;
+
   TodoItem({this.title});
 
   @override
@@ -10,6 +11,7 @@ class TodoItem extends StatefulWidget {
 
 class _TodoItemState extends State<TodoItem> {
   bool isDone = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -26,7 +28,7 @@ class _TodoItemState extends State<TodoItem> {
         child: ListTile(
           leading: isDone ? Icon(Icons.check) : SizedBox(),
           title: Text(
-            widget.title,
+            widget.title.toString(),
             style: TextStyle(
               decoration: isDone ? TextDecoration.lineThrough : null,
             ),
