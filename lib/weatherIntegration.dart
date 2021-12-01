@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
-
+import 'package:intl/intl.dart';
 
 class weatherIntegration extends StatelessWidget {
+  WeatherFactory wf = new WeatherFactory("2abf19a0ef448d0b015dd915f5be78d1");
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
@@ -24,18 +25,36 @@ class weatherIntegration extends StatelessWidget {
   }
 
   Future <String> generateBasicWeatherInfo() async {
-    WeatherFactory wf = new WeatherFactory("c48e86678767091bfe526d529e68a4af");
-    double lat = 55.0111;
-    double lon = 15.0569;
+    final now = new DateTime.now();
+    String formatter = DateFormat.yMMMMd('en_US').add_jm().format(now);
     Weather w = await wf.currentWeatherByCityName("Calgary");
-    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), w.date.toString(), w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString()
-    , w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
+    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), formatter, w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString(),w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
      w.rainLast3Hours.toString(), w.snowLast3Hours.toString());
     //generateExtendedWeatherInfo();
-    return w2.toString();
+    return w2.homePageWeather();
   }
 
-  // Future <void> generateExtendedWeatherInfo() async {
+  Future <String> generateHourlyWeatherInfo() async {
+    final now = new DateTime.now();
+    String formatter = DateFormat.yMMMMd('en_US').add_jm().format(now);
+    Weather w = await wf.currentWeatherByCityName("Calgary");
+    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), formatter, w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString(),w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
+        w.rainLast3Hours.toString(), w.snowLast3Hours.toString());
+    //generateExtendedWeatherInfo();
+    return w2.TopMainPageWeather();
+  }
+
+  Future <String> generateDailyWeatherInfo() async {
+    final now = new DateTime.now();
+    String formatter = DateFormat.yMMMMd('en_US').add_jm().format(now);
+    Weather w = await wf.currentWeatherByCityName("Calgary");
+    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), formatter, w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString(),w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
+        w.rainLast3Hours.toString(), w.snowLast3Hours.toString());
+    //generateExtendedWeatherInfo();
+    return w2.TopMainPageWeather();
+  }
+
+// Future <void> generateExtendedWeatherInfo() async {
   //   WeatherFactory wf = new WeatherFactory("c48e86678767091bfe526d529e68a4af");
   //   List <Weather> w = await wf.fiveDayForecastByCityName("Calgary");
   //   print(w);
@@ -64,9 +83,13 @@ class weatherInfo {
       this.cloudiness, this.country, this.humidity, this.tempFeelsLike, this.windSpeed,
       this.rainLast3Hours, this.snowLast3Hours);
 
-  toString() {
-    return '${this.weatherIcon};${this.date};${this.areaName};${this.weatherDescription};${this.temperature.replaceAll(' Celsius',' °C')};${this.cloudiness};${this.country};${this.humidity};${this.tempFeelsLike};${this.windSpeed};${this.rainLast3Hours};${this.snowLast3Hours}';
+  homePageWeather() {
+    return '${this.weatherIcon};${this.date};${this.areaName};${this.weatherDescription};${this.temperature.replaceAll(' Celsius',' °C')}';
+  }
 
+  TopMainPageWeather() {
+    return '${this.weatherIcon};${this.date};${this.areaName};${this.weatherDescription};${this.temperature.replaceAll(' Celsius',' °C')};${this.cloudiness};${this.country};${this.humidity};${this.tempFeelsLike};${this.windSpeed};${this.rainLast3Hours};${this.snowLast3Hours}';
+    // return '${this.weatherIcon};${this.date};${this.areaName};${this.temperature.replaceAll(' Celsius',' °C')};${this.country}';
   }
 
 }
