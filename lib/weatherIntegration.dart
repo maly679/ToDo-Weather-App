@@ -1,69 +1,78 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:weather/weather.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class weatherIntegration extends StatelessWidget {
+class weatherIntegration {
   WeatherFactory wf = new WeatherFactory("2abf19a0ef448d0b015dd915f5be78d1");
-  @override
-  Widget build(BuildContext context) {
-    return new FutureBuilder(
-        future: generateBasicWeatherInfo(),
-        builder: ( context, AsyncSnapshot<String?> text) {
-          return new SingleChildScrollView(
 
-              padding: new EdgeInsets.fromLTRB(40, 50, 0, 0),
-              child: new Text(
-                text.data.toString(),
-                style: new TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 19.0,
-                ),
-              ));
-        });
-    throw UnimplementedError();
-  }
+  List<String> locations = [];
 
-  Future <String> generateBasicWeatherInfo() async {
+  Future<basicWeatherInfo> generateBasicWeatherInfo(city) async {
     final now = new DateTime.now();
     String formatter = DateFormat.yMMMMd('en_US').add_jm().format(now);
-    Weather w = await wf.currentWeatherByCityName("Calgary");
-    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), formatter, w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString(),w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
-     w.rainLast3Hours.toString(), w.snowLast3Hours.toString());
-    //generateExtendedWeatherInfo();
-    return w2.homePageWeather();
+    Weather w = await wf.currentWeatherByCityName(city);
+    basicWeatherInfo w2 = new basicWeatherInfo(
+        w.weatherIcon.toString(),
+        formatter,
+        w.areaName.toString(),
+        w.weatherDescription.toString(),
+        w.temperature.toString(),
+        w.cloudiness.toString(),
+        w.country.toString(),
+        w.humidity.toString(),
+        w.tempFeelsLike.toString(),
+        w.windSpeed.toString(),
+        w.rainLast3Hours.toString(),
+        w.snowLast3Hours.toString(),
+        w.latitude.toString(),
+        w.longitude.toString());
+
+    return w2;
   }
 
-  Future <String> generateHourlyWeatherInfo() async {
-    final now = new DateTime.now();
-    String formatter = DateFormat.yMMMMd('en_US').add_jm().format(now);
-    Weather w = await wf.currentWeatherByCityName("Calgary");
-    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), formatter, w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString(),w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
-        w.rainLast3Hours.toString(), w.snowLast3Hours.toString());
-    //generateExtendedWeatherInfo();
-    return w2.TopMainPageWeather();
+  Future<List<hourlyandDailyWeatherInfo>> generateHourlyandDaily(
+      lat, lon) async {
+    List<hourlyandDailyWeatherInfo> hourlyandDailyWeather = [];
+    final response = await http.get(Uri.parse(
+        "http://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,currently,alerts&appid=2abf19a0ef448d0b015dd915f5be78d1&units=metric"));
+
+    if (jsonDecode(response.body).length > 0) {
+      for (var i = 0; i < 5; i++) {
+        String twentyFourHourTime = DateTime.fromMillisecondsSinceEpoch(
+                    jsonDecode(response.body)["hourly"][i]['dt'] * 1000)
+                .toString()
+                .split(" ")[1]
+                .split(".")[0]
+                .split(":00")[0] +
+            (":00");
+        String temp =
+            jsonDecode(response.body)["hourly"][i]['temp'].toString() + "°C";
+        String dailyDt = DateTime.fromMillisecondsSinceEpoch(
+                jsonDecode(response.body)["daily"][i]['dt'] * 1000)
+            .toString()
+            .split(" ")[0];
+        String dailyTemp = jsonDecode(response.body)["daily"][i]['temp']['day']
+                .toString() +
+            "°C" +
+            "/" +
+            jsonDecode(response.body)["daily"][i]['temp']['night'].toString() +
+            "°C";
+
+        hourlyandDailyWeather.add(new hourlyandDailyWeatherInfo(
+            temp,
+            jsonDecode(response.body)["hourly"][i]["weather"][0]['icon'],
+            twentyFourHourTime,
+            dailyDt,
+            dailyTemp,
+            jsonDecode(response.body)["daily"][i]["weather"][0]['icon']));
+      }
+    }
+    return hourlyandDailyWeather;
   }
+}
 
-  Future <String> generateDailyWeatherInfo() async {
-    final now = new DateTime.now();
-    String formatter = DateFormat.yMMMMd('en_US').add_jm().format(now);
-    Weather w = await wf.currentWeatherByCityName("Calgary");
-    weatherInfo w2 = new weatherInfo(w.weatherIcon.toString(), formatter, w.areaName.toString(), w.weatherDescription.toString(), w.temperature.toString(),w.cloudiness.toString(), w.country.toString(), w.humidity.toString(), w.tempFeelsLike.toString(), w.windSpeed.toString(),
-        w.rainLast3Hours.toString(), w.snowLast3Hours.toString());
-    //generateExtendedWeatherInfo();
-    return w2.TopMainPageWeather();
-  }
-
-// Future <void> generateExtendedWeatherInfo() async {
-  //   WeatherFactory wf = new WeatherFactory("c48e86678767091bfe526d529e68a4af");
-  //   List <Weather> w = await wf.fiveDayForecastByCityName("Calgary");
-  //   print(w);
-  // }
-
-  }
-
-
-class weatherInfo {
+class basicWeatherInfo {
   String weatherIcon;
   String date;
   String areaName;
@@ -76,21 +85,46 @@ class weatherInfo {
   String windSpeed;
   String rainLast3Hours;
   String snowLast3Hours;
+  String longitude;
+  String latitude;
 
+  basicWeatherInfo(
+      this.weatherIcon,
+      this.date,
+      this.areaName,
+      this.weatherDescription,
+      this.temperature,
+      this.cloudiness,
+      this.country,
+      this.humidity,
+      this.tempFeelsLike,
+      this.windSpeed,
+      this.rainLast3Hours,
+      this.snowLast3Hours,
+      this.latitude,
+      this.longitude);
 
-
-  weatherInfo(this.weatherIcon, this.date, this.areaName, this.weatherDescription, this.temperature,
-      this.cloudiness, this.country, this.humidity, this.tempFeelsLike, this.windSpeed,
-      this.rainLast3Hours, this.snowLast3Hours);
-
-  homePageWeather() {
-    return '${this.weatherIcon};${this.date};${this.areaName};${this.weatherDescription};${this.temperature.replaceAll(' Celsius',' °C')}';
+  basicWeatherDetails() {
+    return '${this.weatherIcon};${this.date};${this.areaName};${this.weatherDescription};${this.temperature.replaceAll(' Celsius', ' °C')};${this.cloudiness};${this.country};${this.humidity};${this.tempFeelsLike};${this.windSpeed};${this.rainLast3Hours};${this.snowLast3Hours}';
   }
-
-  TopMainPageWeather() {
-    return '${this.weatherIcon};${this.date};${this.areaName};${this.weatherDescription};${this.temperature.replaceAll(' Celsius',' °C')};${this.cloudiness};${this.country};${this.humidity};${this.tempFeelsLike};${this.windSpeed};${this.rainLast3Hours};${this.snowLast3Hours}';
-    // return '${this.weatherIcon};${this.date};${this.areaName};${this.temperature.replaceAll(' Celsius',' °C')};${this.country}';
-  }
-
 }
 
+class hourlyandDailyWeatherInfo {
+  String temp;
+  String icon;
+  String timeStamp;
+  String dailyDt;
+  String dailyTemp;
+  String dailyIcon;
+
+  hourlyandDailyWeatherInfo(this.temp, this.icon, this.timeStamp, this.dailyDt,
+      this.dailyTemp, this.dailyIcon);
+}
+
+class weather {
+  String city;
+  String lat;
+  String lon;
+
+  weather(this.city, this.lat, this.lon);
+}
