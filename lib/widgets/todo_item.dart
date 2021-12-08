@@ -25,14 +25,23 @@ class _TodoItemState extends State<TodoItem> {
         margin: EdgeInsets.only(
           bottom: 20,
         ),
-        child: ListTile(
-          leading: isDone ? Icon(Icons.check) : SizedBox(),
+        child: CheckboxListTile(
           title: Text(
             widget.title.toString(),
             style: TextStyle(
               decoration: isDone ? TextDecoration.lineThrough : null,
             ),
           ),
+          secondary: Icon(Icons.checklist),
+          controlAffinity:
+          ListTileControlAffinity.leading,
+          value: isDone,
+          onChanged: (bool? value) {
+            setState(() {
+              isDone = value!;
+            });
+          },
+          activeColor: Colors.green,
         ),
         decoration: BoxDecoration(color: Colors.white),
       ),
