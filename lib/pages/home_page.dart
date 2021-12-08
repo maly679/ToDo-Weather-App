@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todo_apps/models/todo_model.dart';
-import 'package:todo_apps/widgets/todo_item.dart';
-import 'package:todo_apps/widgets/topWeather.dart';
-import 'package:todo_apps/weatherIntegration.dart';
+import 'package:todo_list_weather/models/todo_model.dart';
+import 'package:todo_list_weather/widgets/todo_item.dart';
+import 'package:todo_list_weather/widgets/topWeather.dart';
+import 'package:todo_list_weather/weatherIntegration.dart';
+import 'package:todo_list_weather/widgets/topWeather.dart';
 
 class HomePage extends StatefulWidget {
   @override
