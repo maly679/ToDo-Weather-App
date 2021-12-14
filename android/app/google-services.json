@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "774748096940",
+    "project_id": "robotic-charmer-331100",
+    "storage_bucket": "robotic-charmer-331100.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774748096940:android:9e5a32617cc9ddeb4ed209",
+        "android_client_info": {
+          "package_name": "com.example.todo_list_weather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774748096940-7tma0514nrdg93n4ov0e03703io5ulq2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACtQ-s7ucGhIgkgTXCL62pfPf6D1L7uVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774748096940-7tma0514nrdg93n4ov0e03703io5ulq2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
